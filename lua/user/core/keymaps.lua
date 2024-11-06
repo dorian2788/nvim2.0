@@ -62,7 +62,7 @@ keymap("n", "<leader>tf", "<cmd>tabnew %<CR>", {desc = "Open current buffer in n
 
 -- Move blocks of text
 keymap("v", "K", ":m '<-2<CR>gv=gv", {desc = "move blocks of text 2 places up"})
-keymap("v", "j", ":m '>+1<cr>gv=gv", {desc = "move blocks of text 1 places down"})
+keymap("v", "J", ":m '>+1<cr>gv=gv", {desc = "move blocks of text 1 places down"})
 
 -- go down one line
 keymap("v", "<leader>p", "_dP", {desc = "Delete text into a blackhole register and then paste"})
