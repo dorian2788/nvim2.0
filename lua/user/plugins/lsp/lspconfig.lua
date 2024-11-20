@@ -30,7 +30,11 @@ return {
         keymap.set("n", "gR", "<cmd>Telescope lsp_references<CR>", opts) -- show definition, references
 
         opts.desc = "Go to declaration"
-        keymap.set("n", "gD", vim.lsp.buf.declaration, opts) -- go to declaration
+        keymap.set("n", "gD", function()
+          vim.lsp.buf.definition()
+          vim.cmd("split")
+        end, { buffer = 0, desc = "Go to definition in a new split" })
+        -- keymap.set("n", "gD", vim.lsp.buf.declaration, opts) -- go to declaration
 
         opts.desc = "Show LSP definitions"
         keymap.set("n", "gd", "<cmd>Telescope lsp_definitions<CR>", opts) -- show lsp definitions
@@ -47,8 +51,11 @@ return {
         opts.desc = "Smart rename"
         keymap.set("n", "<leader>rn", vim.lsp.buf.rename, opts) -- smart rename
 
+        opts.desc = "Show project diagnostics"
+        keymap.set("n", "<leader>D", "<cmd>Telescope diagnostics<CR>", opts) -- show  diagnostics for project
+
         opts.desc = "Show buffer diagnostics"
-        keymap.set("n", "<leader>D", "<cmd>Telescope diagnostics bufnr=0<CR>", opts) -- show  diagnostics for file
+        keymap.set("n", "<leader>df", "<cmd>Telescope diagnostics bufnr=0<CR>", opts) -- show  diagnostics for file
 
         opts.desc = "Show line diagnostics"
         keymap.set("n", "<leader>d", vim.diagnostic.open_float, opts) -- show diagnostics for line
