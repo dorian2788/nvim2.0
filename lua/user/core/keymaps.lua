@@ -63,3 +63,7 @@ keymap("v", "K", ":m '<-1<CR>gv=gv", { desc = "move blocks of text 2 places up" 
 keymap("v", "<leader>p", "_dP", { desc = "replace current selected text with default register with yanking it" })
 keymap("n", "<leader>d", "_d", { desc = "delete without yanking" })
 keymap("v", "<leader>d", "_d", { desc = "delete without yanking" })
+
+-- Quickfix list movements
+-- keymap("n", "]q", ":cnext<CR>", { desc = "Next quickfix item" })
+-- keymap("n", "[q", ":cprev<CR>", { desc = "Previous quickfix item" })
