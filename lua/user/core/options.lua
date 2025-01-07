@@ -23,7 +23,7 @@ opt.expandtab = true -- expand tab to spaces
 opt.autoindent = true -- copy indent from current line when starting new one
 opt.showtabline = 0 --always show tabs
 
-opt.wrap = false 
+opt.wrap = false
 
 -- search settings
 opt.ignorecase = true -- ignore case when searching
@@ -40,7 +40,7 @@ opt.signcolumn = "yes" -- show sign colum so text doesn't shift
 -- backspace
 opt.backspace = "indent,eol,start" -- allow backspace on indent, EOL or insert mode start
 
---clipboard 
+--clipboard
 opt.clipboard:append("unnamedplus") -- use system clipboard as default register
 
 -- split
@@ -49,7 +49,7 @@ opt.splitbelow = true
 
 -- undo
 opt.undofile = true
-opt.undodir = os.getenv("HOME").."/.nvim/undodir"
+opt.undodir = os.getenv("HOME") .. "/.nvim/undodir"
 opt.updatetime = 200
 opt.writebackup = false
 
@@ -57,3 +57,7 @@ opt.writebackup = false
 opt.cmdheight = 2
 opt.laststatus = 3
 opt.showcmd = false
+
+-- spelling
+opt.spell = true
+opt.spelllang = "en_us"
