@@ -17,6 +17,8 @@ keymap("n", "<leader>l", ":wincmd l<CR>", { desc = "Move right" })
 
 keymap("n", "<leader>sh", ":split<CR>", { desc = "Horizontal split" })
 keymap("n", "<leader>sv", ":vsplit<CR>", { desc = "Vertical split" })
+keymap("n", "<leader>sV", "<C-w>H", { desc = "Change from horizonal to vertical split" })
+keymap("n", "<leader>sH", "<C-w>K", { desc = "Change from vertical to horizontal split" })
 keymap("n", "<leader>se", "<C-w>=", { desc = "Make the split even" })
 keymap("n", "<leader>sx", "<cmd>close<CR>", { desc = "Close current split" }) -- close current split window
 
