@@ -2,7 +2,8 @@ vim.g.mapleader = " "
 local keymap = vim.keymap.set
 
 -- Normal --
-keymap("n", "<cmd>W<CR>", "<cmd>wa<CR>", { desc = "Save all" })
+vim.api.nvim_create_user_command("W", "wa", {})
+vim.api.nvim_create_user_command("Q", "qa", {})
 
 -- Centered
 keymap("n", "n", "nzzzv", { desc = "Brings search results to midscreen" })
@@ -14,11 +15,63 @@ keymap("n", "<leader>h", ":wincmd h<CR>", { desc = "Move left" })
 keymap("n", "<leader>j", ":wincmd j<CR>", { desc = "Move down" })
 keymap("n", "<leader>k", ":wincmd k<CR>", { desc = "Move up" })
 keymap("n", "<leader>l", ":wincmd l<CR>", { desc = "Move right" })
-
 keymap("n", "<leader>sh", ":split<CR>", { desc = "Horizontal split" })
 keymap("n", "<leader>sv", ":vsplit<CR>", { desc = "Vertical split" })
-keymap("n", "<leader>sV", "<C-w>H", { desc = "Change from horizonal to vertical split" })
-keymap("n", "<leader>sH", "<C-w>K", { desc = "Change from vertical to horizontal split" })
+
+keymap("n", "<leader>sV", function()
+  -- Remember current window info
+  local current_buf = vim.api.nvim_get_current_buf()
+
+  -- Close NvimTree temporarily
+  vim.cmd("NvimTreeClose")
+
+  -- Convert to vertical splits
+  vim.cmd("wincmd H")
+
+  -- Reopen NvimTree
+  vim.cmd("NvimTreeOpen")
+
+  -- Jump back to your original buffer/window
+  local target_win = nil
+  for _, win in ipairs(vim.api.nvim_list_wins()) do
+    if vim.api.nvim_win_get_buf(win) == current_buf then
+      target_win = win
+      break
+    end
+  end
+
+  if target_win then
+    vim.api.nvim_set_current_win(target_win)
+  end
+end, { desc = "Convert to vertical splits and return to original window" })
+
+keymap("n", "<leader>sH", function()
+  -- Remember current window info
+  local current_buf = vim.api.nvim_get_current_buf()
+
+  -- Close NvimTree temporarily
+  vim.cmd("NvimTreeClose")
+
+  -- Convert to horizontal splits
+  vim.cmd("wincmd K")
+
+  -- Reopen NvimTree
+  vim.cmd("NvimTreeOpen")
+
+  -- Jump back to your original buffer/window
+  local target_win = nil
+  for _, win in ipairs(vim.api.nvim_list_wins()) do
+    if vim.api.nvim_win_get_buf(win) == current_buf then
+      target_win = win
+      break
+    end
+  end
+
+  if target_win then
+    vim.api.nvim_set_current_win(target_win)
+  end
+end, { desc = "Convert to horizontal splits and return to original window" })
+
 keymap("n", "<leader>se", "<C-w>=", { desc = "Make the split even" })
 keymap("n", "<leader>sx", "<cmd>close<CR>", { desc = "Close current split" }) -- close current split window
 
@@ -30,7 +83,7 @@ keymap("n", "<leader>nh", ":nohlsearch<CR>", { desc = "remove the search highlig
 keymap("n", "<leader>b", ":w<bar>%bd<bar>e#<CR>", { desc = "close buffers" })
 
 -- Clipboard + Copy
-keymap("n", "<leader>y", '"+y', { desc = "copy to clipboard" })
+keymap("v", "<leader>y", '"+y', { desc = "copy to clipboard" })
 keymap("n", "<leader>Y", 'gg"+yG', { desc = "copy all to clipboard" })
 keymap("n", "Y", "y$", { desc = "Yanks from cursor to the end of the line" })
 
@@ -60,12 +113,8 @@ keymap("i", "/**<CR>", "/**<CR><CR><BS>/<esc>i*<esc>ko", { desc = "Adding commen
 
 -- Move blocks of text
 keymap("v", "J", ":m '>+1<CR>gv=gv", { desc = "move blocks of text 1 places down" })
-keymap("v", "K", ":m '<-1<CR>gv=gv", { desc = "move blocks of text 2 places up" })
+keymap("v", "K", ":m '<-2<CR>gv=gv", { desc = "move blocks of text 1 places up" })
 
 keymap("v", "<leader>p", "_dP", { desc = "replace current selected text with default register with yanking it" })
 keymap("n", "<leader>d", "_d", { desc = "delete without yanking" })
 keymap("v", "<leader>d", "_d", { desc = "delete without yanking" })
-
--- Quickfix list movements
--- keymap("n", "]q", ":cnext<CR>", { desc = "Next quickfix item" })
--- keymap("n", "[q", ":cprev<CR>", { desc = "Previous quickfix item" })
