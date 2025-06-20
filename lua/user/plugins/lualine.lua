@@ -29,6 +29,35 @@ return {
       },
     }
 
+    -- Function to get active linter
+    local function get_linter()
+      local lint = require("lint")
+      local ft = vim.bo.filetype
+
+      -- Get configured linters for current filetype
+      local linters_by_ft = lint.linters_by_ft or {}
+      local configured_linters = linters_by_ft[ft]
+
+      if not configured_linters or #configured_linters == 0 then
+        return "none"
+      end
+
+      -- Check which linters are actually available
+      local available = {}
+      for _, linter_name in ipairs(configured_linters) do
+        -- Simple check - you could make this more sophisticated
+        if vim.fn.executable(linter_name) == 1 or linter_name == "eslint_d" then
+          table.insert(available, linter_name)
+        end
+      end
+
+      if #available == 0 then
+        return "missing"
+      end
+
+      return table.concat(available, ",")
+    end
+
     -- Function to get active formatter
     local function get_formatter()
       local conform = require("conform")
@@ -44,6 +73,21 @@ return {
       end
 
       return table.concat(names, ", ")
+    end
+
+    -- Function to get active LSP servers
+    local function get_lsp_servers()
+      local clients = vim.lsp.get_clients({ bufnr = 0 })
+      if #clients == 0 then
+        return "No LSP"
+      end
+
+      local server_names = {}
+      for _, client in ipairs(clients) do
+        table.insert(server_names, client.name)
+      end
+
+      return table.concat(server_names, ", ")
     end
 
     lualine.setup({
@@ -96,9 +140,19 @@ return {
             color = { fg = "#ff9e64" },
           },
           {
+            get_lsp_servers,
+            icon = "💡",
+            color = { fg = "#b8bb26" },
+          },
+          {
+            get_linter,
+            icon = "🔍",
+            color = { fg = "#7aa2f7" },
+          },
+          {
             get_formatter,
             icon = "🖼️",
-            color = { fg = "#98bb6c" },
+            color = { fg = "#b8bb26" },
           },
           { "encoding" },
           { "fileformat" },

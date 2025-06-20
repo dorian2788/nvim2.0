@@ -87,6 +87,10 @@ keymap("v", "<leader>y", '"+y', { desc = "copy to clipboard" })
 keymap("n", "<leader>Y", 'gg"+yG', { desc = "copy all to clipboard" })
 keymap("n", "Y", "y$", { desc = "Yanks from cursor to the end of the line" })
 
+-- Quick mark navigation
+keymap("n", "<leader>mm", "mM", { desc = "Set quick mark M" })
+keymap("n", "<leader>mg", "'M", { desc = "Go to quick mark M" })
+
 -- Insert --
 
 -- add undo break points
@@ -118,3 +122,60 @@ keymap("v", "K", ":m '<-2<CR>gv=gv", { desc = "move blocks of text 1 places up" 
 keymap("v", "<leader>p", "_dP", { desc = "replace current selected text with default register with yanking it" })
 keymap("n", "<leader>d", "_d", { desc = "delete without yanking" })
 keymap("v", "<leader>d", "_d", { desc = "delete without yanking" })
+
+-- Toggle inlay hints globally
+keymap("n", "<leader>ih", function()
+  local bufnr = vim.api.nvim_get_current_buf()
+  local enabled = vim.lsp.inlay_hint.is_enabled({ bufnr = bufnr })
+  vim.lsp.inlay_hint.enable(not enabled, { bufnr = bufnr })
+  print("Inlay hints " .. (enabled and "disabled" or "enabled"))
+end, { desc = "Toggle inlay hints" })
+
+-- TypeScript config switching using the proper vtsls command
+keymap("n", "<leader>cV", function()
+  -- Use the same approach as LazyVim
+  local clients = vim.lsp.get_clients({ name = "vtsls" })
+  if #clients == 0 then
+    vim.notify("vtsls not active", vim.log.levels.WARN)
+    return
+  end
+
+  for _, client in ipairs(clients) do
+    client.request("workspace/executeCommand", {
+      command = "typescript.selectTypeScriptVersion",
+      -- No arguments needed - vtsls will show a picker
+    }, function(err, result)
+      if err then
+        vim.notify("Error: " .. vim.inspect(err), vim.log.levels.ERROR)
+      else
+        vim.notify("TypeScript version/config updated", vim.log.levels.INFO)
+      end
+    end)
+  end
+end, { desc = "Select TypeScript workspace version" })
+
+-- Or create specific shortcuts
+keymap("n", "<leader>tst", function()
+  local clients = vim.lsp.get_clients({ name = "vtsls" })
+  for _, client in ipairs(clients) do
+    client.request("workspace/executeCommand", {
+      command = "typescript.selectTypeScriptVersion",
+      arguments = {
+        -- Specify the tsconfig directly
+        tsconfig = "./tsconfig.test.json",
+      },
+    })
+  end
+end, { desc = "Use test TypeScript config" })
+
+keymap("n", "<leader>tsa", function()
+  local clients = vim.lsp.get_clients({ name = "vtsls" })
+  for _, client in ipairs(clients) do
+    client.request("workspace/executeCommand", {
+      command = "typescript.selectTypeScriptVersion",
+      arguments = {
+        tsconfig = "./tsconfig.json",
+      },
+    })
+  end
+end, { desc = "Use main TypeScript config" })

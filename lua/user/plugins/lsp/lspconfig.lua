@@ -12,6 +12,12 @@ return {
     local lspconfig = require("lspconfig")
     local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
+    --Import TypeScript configuration
+    local vtsls_config = require("user.lsp-config.vtsls")
+
+    -- Import JSON LSP configuration
+    local jsonls_config = require("user.lsp-config.jsonls")
+
     -- LSP keymaps (attach when LSP server starts)
     vim.api.nvim_create_autocmd("LspAttach", {
       group = vim.api.nvim_create_augroup("UserLspConfig", {}),
@@ -28,8 +34,14 @@ return {
           vim.cmd("split")
         end, { buffer = 0, desc = "Go to definition in a new split" })
 
+        -- Fixed: Added .set to keymap call and uncommented
         opts.desc = "Show LSP definitions"
-        keymap.set("n", "gd", "<cmd>Telescope lsp_definitions<CR>", opts)
+        keymap.set("n", "gd", function()
+          -- Set mark before going to declaration in split
+          vim.cmd("normal! mM")
+          vim.lsp.buf.definition()
+          vim.cmd("split")
+        end, { buffer = ev.buf, desc = "Go to definition in split (with auto-mark)" })
 
         opts.desc = "Show LSP implementations"
         keymap.set("n", "gi", "<cmd>Telescope lsp_implementations<CR>", opts)
@@ -46,13 +58,14 @@ return {
 
         -- Diagnostics
         opts.desc = "Show project diagnostics"
-        keymap.set("n", "<leader>D", "<cmd>Telescope diagnostics<CR>", opts)
+        keymap.set("n", "<leader>lD", "<cmd>Telescope diagnostics<CR>", opts)
 
+        -- Fixed: Removed stray 's' character
         opts.desc = "Show buffer diagnostics"
         keymap.set("n", "<leader>df", "<cmd>Telescope diagnostics bufnr=0<CR>", opts)
 
         opts.desc = "Show line diagnostics"
-        keymap.set("n", "<leader>d", vim.diagnostic.open_float, opts)
+        keymap.set("n", "<leader>ld", vim.diagnostic.open_float, opts)
 
         opts.desc = "Go to previous diagnostic"
         keymap.set("n", "[d", vim.diagnostic.goto_prev, opts)
@@ -74,10 +87,10 @@ return {
     vim.diagnostic.config({
       signs = {
         text = {
-          [vim.diagnostic.severity.ERROR] = " ",
-          [vim.diagnostic.severity.WARN] = " ",
-          [vim.diagnostic.severity.HINT] = "󰠠 ",
-          [vim.diagnostic.severity.INFO] = " ",
+          [vim.diagnostic.severity.ERROR] = "✘",
+          [vim.diagnostic.severity.WARN] = "▲",
+          [vim.diagnostic.severity.HINT] = "⚑",
+          [vim.diagnostic.severity.INFO] = "●",
         },
       },
     })
@@ -90,17 +103,13 @@ return {
     lspconfig.prismals.setup({ capabilities = capabilities })
     lspconfig.pyright.setup({ capabilities = capabilities })
 
-    -- GraphQL server with specific filetypes
-    lspconfig.graphql.setup({
-      capabilities = capabilities,
-      filetypes = { "graphql", "gql", "typescriptreact", "javascriptreact" },
-    })
+    -- -- TS server with custom settings
+    -- lspconfig.vtsls.setup(typescript_config.get_config(capabilities))
+    vtsls_config.setup(lspconfig, capabilities)
 
-    -- Emmet server with specific filetypes
-    lspconfig.emmet_ls.setup({
-      capabilities = capabilities,
-      filetypes = { "html", "typescriptreact", "javascriptreact", "css", "sass", "scss", "less" },
-    })
+    --
+    -- JSON LSP with schema support
+    lspconfig.jsonls.setup(jsonls_config.get_config(capabilities))
 
     -- Lua server with custom settings
     lspconfig.lua_ls.setup({

@@ -6,6 +6,8 @@ return {
     { "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
     "nvim-tree/nvim-web-devicons",
     "folke/todo-comments.nvim",
+    "ANGkeith/telescope-terraform-doc.nvim",
+    "cappyzawa/telescope-terraform.nvim",
   },
   config = function()
     local telescope = require("telescope")
@@ -39,6 +41,8 @@ return {
     })
 
     telescope.load_extension("fzf")
+    telescope.load_extension("terraform_doc")
+    telescope.load_extension("terraform")
 
     -- set keymaps
     local keymap = vim.keymap -- for conciseness
@@ -51,5 +55,6 @@ return {
     keymap.set("n", "<leader>fg", "<cmd>Telescope live_grep<cr>", { desc = "Find string in cwd" })
     keymap.set("n", "<leader>fc", "<cmd>Telescope grep_string<cr>", { desc = "Find string under cursor in cwd" })
     keymap.set("n", "<leader>ft", "<cmd>TodoTelescope<cr>", { desc = "Find todos" })
+    keymap.set("n", "<leader>td", "<cmd>Telescope terraform_doc<cr>", { desc = "Terraform documentation" })
   end,
 }

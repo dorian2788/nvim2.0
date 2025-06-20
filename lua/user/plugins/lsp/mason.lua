@@ -28,6 +28,17 @@ return {
         "gopls",
         "prismals",
         "pyright",
+        "jsonls",
+        "vtsls",
+        "terraformls",
+      },
+      automatic_installation = true,
+      automatic_enable = {
+        "html",
+        "cssls",
+        "tailwindcss",
+        "pyright",
+        "terraformls",
       },
     })
 
@@ -39,8 +50,11 @@ return {
         "isort", -- python formatter
         "black", -- python formatter
         "pylint", -- python linter
-        { "eslint_d", version = "13.1.2" },
+        "eslint_d",
+        "tflint", -- terraform lint
       },
+      auto_update = false,
+      run_on_start = true,
     })
   end,
 }
