@@ -31,6 +31,7 @@ return {
         "jsonls",
         "vtsls",
         "terraformls",
+        "marksman",
       },
       automatic_installation = true,
       automatic_enable = {
@@ -52,6 +53,7 @@ return {
         "pylint", -- python linter
         "eslint_d",
         "tflint", -- terraform lint
+        "gofumpt", -- go formatter
       },
       auto_update = false,
       run_on_start = true,

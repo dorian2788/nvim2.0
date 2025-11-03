@@ -3,10 +3,24 @@ vim.cmd("let g:netrw_liststyle = 3")
 local opt = vim.opt
 
 opt.backup = false -- set backup false
+-- opt.setswapfile = false --creates a swapfile
 opt.hidden = true
 opt.errorbells = false
 opt.syntax = "on"
 opt.mouse = "a" -- allow mouse to be used in nvim
+
+-- Auto-reload files when changed outside Neovim
+opt.autoread = true
+
+-- Trigger autoread when cursor stops moving
+vim.api.nvim_create_autocmd({ "FocusGained", "BufEnter", "CursorHold", "CursorHoldI" }, {
+  pattern = "*",
+  callback = function()
+    if vim.fn.mode() ~= "c" then
+      vim.cmd("checktime")
+    end
+  end,
+})
 
 -- numbering
 opt.relativenumber = true
@@ -32,18 +46,6 @@ opt.incsearch = true
 
 opt.cursorline = true -- highlight the cursor line
 
-opt.showmatch = true
-
--- Better whitespace visualization
-opt.list = true
-opt.listchars = {
-  tab = "→ ", -- Show tabs as arrows
-  trail = "·", -- Show trailing spaces as dots
-  extends = "›", -- Show line continues beyond screen
-  precedes = "‹", -- Show line continues before screen
-  nbsp = "␣", -- Show non-breaking spaces
-}
-
 opt.termguicolors = true -- true terminal colours
 opt.background = "dark" -- dark mode
 opt.signcolumn = "yes" -- show sign column so text doesn't shift
@@ -67,29 +69,8 @@ opt.writebackup = false
 -- status
 opt.cmdheight = 2
 opt.laststatus = 3
-opt.showcmd = true
-opt.showmode = false
-opt.timeoutlen = 1000
+opt.showcmd = false
 
 -- spelling
 opt.spell = true
 opt.spelllang = "en_us"
-
--- Show relative line numbers in normal mode, absolute in insert
-vim.api.nvim_create_autocmd({ "BufEnter", "FocusGained", "InsertLeave", "WinEnter" }, {
-  pattern = "*",
-  callback = function()
-    if vim.wo.number and vim.fn.mode() ~= "i" then
-      vim.wo.relativenumber = true
-    end
-  end,
-})
-
-vim.api.nvim_create_autocmd({ "BufLeave", "FocusLost", "InsertEnter", "WinLeave" }, {
-  pattern = "*",
-  callback = function()
-    if vim.wo.number then
-      vim.wo.relativenumber = false
-    end
-  end,
-})

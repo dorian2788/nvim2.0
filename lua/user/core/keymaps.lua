@@ -120,8 +120,8 @@ keymap("v", "J", ":m '>+1<CR>gv=gv", { desc = "move blocks of text 1 places down
 keymap("v", "K", ":m '<-2<CR>gv=gv", { desc = "move blocks of text 1 places up" })
 
 keymap("v", "<leader>p", "_dP", { desc = "replace current selected text with default register with yanking it" })
-keymap("n", "<leader>d", "_d", { desc = "delete without yanking" })
-keymap("v", "<leader>d", "_d", { desc = "delete without yanking" })
+keymap("n", "<leader>d", '"_d', { desc = "delete without yanking" })
+keymap("v", "<leader>d", '"_d', { desc = "delete without yanking" })
 
 -- Toggle inlay hints globally
 keymap("n", "<leader>ih", function()

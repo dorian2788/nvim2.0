@@ -26,8 +26,11 @@ return {
 
     telescope.setup({
       defaults = {
-        hidden = true,
-        file_ignore_patterns = {},
+        file_ignore_patterns = {
+          "%.git/",
+          "node_modules/",
+          "%.DS_Store",
+        },
         path_display = { "smart" },
         mappings = {
           i = {
@@ -36,6 +39,17 @@ return {
             ["<C-q>"] = actions.send_to_qflist + custom_actions.open_trouble_qflist,
             ["<C-t>"] = trouble_telescope.open,
           },
+        },
+      },
+      pickers = {
+        find_files = {
+          hidden = true,
+          file_ignore_patterns = { "node_modules", ".git", "%.DS_Store" },
+          find_command = { "rg", "--files", "--hidden" },
+          layout_strategy = "vertical",
+        },
+        live_grep = {
+          layout_strategy = "vertical",
         },
       },
     })
@@ -49,7 +63,7 @@ return {
 
     keymap.set("n", "<leader>ff", "<cmd>Telescope find_files<cr>", { desc = "Fuzzy find files in cwd" })
     -- keymap.set("n", "<leader>ff", function()
-    --   require("telescope.builtin").find_files({ hidden = true })
+    --   require("telescope.builtin").find_files({ hidden = true, find_command = { "rg", "--files", "--hidden" } })
     -- end, { desc = "Fuzzy find files in cwd (including hidden)" })
     keymap.set("n", "<leader>fr", "<cmd>Telescope oldfiles<cr>", { desc = "Fuzzy find recent files" })
     keymap.set("n", "<leader>fg", "<cmd>Telescope live_grep<cr>", { desc = "Find string in cwd" })
