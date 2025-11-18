@@ -112,14 +112,12 @@ M.on_attach = function(client, bufnr)
   -- are handled by the main LspAttach autocmd in lspconfig.lua
 end
 
--- Setup function that can be called from lspconfig
-M.setup = function(lspconfig, capabilities)
-  local config = vim.tbl_deep_extend("force", M.server_config, {
+-- Get configuration that can be used with vim.lsp.config
+M.get_config = function(capabilities)
+  return vim.tbl_deep_extend("force", M.server_config, {
     capabilities = capabilities,
     on_attach = M.on_attach,
   })
-
-  lspconfig.vtsls.setup(config)
 end
 
 return M

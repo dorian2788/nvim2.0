@@ -9,7 +9,6 @@ return {
   },
   config = function()
     local keymap = vim.keymap
-    local lspconfig = require("lspconfig")
     local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
     --Import TypeScript configuration
@@ -95,24 +94,24 @@ return {
       },
     })
 
-    -- Configure LSP servers directly
+    -- Configure LSP servers using new vim.lsp.config API
     -- Basic servers with default settings
-    lspconfig.html.setup({ capabilities = capabilities })
-    lspconfig.cssls.setup({ capabilities = capabilities })
-    lspconfig.tailwindcss.setup({ capabilities = capabilities })
-    lspconfig.prismals.setup({ capabilities = capabilities })
-    lspconfig.pyright.setup({ capabilities = capabilities })
+    vim.lsp.config("html", { capabilities = capabilities })
+    vim.lsp.config("cssls", { capabilities = capabilities })
+    vim.lsp.config("tailwindcss", { capabilities = capabilities })
+    vim.lsp.config("prismals", { capabilities = capabilities })
+    vim.lsp.config("pyright", { capabilities = capabilities })
 
-    -- -- TS server with custom settings
-    -- lspconfig.vtsls.setup(typescript_config.get_config(capabilities))
-    vtsls_config.setup(lspconfig, capabilities)
+    -- TypeScript server with custom settings
+    local vtsls_opts = vtsls_config.get_config and vtsls_config.get_config(capabilities)
+      or { capabilities = capabilities }
+    vim.lsp.config("vtsls", vtsls_opts)
 
-    --
     -- JSON LSP with schema support
-    lspconfig.jsonls.setup(jsonls_config.get_config(capabilities))
+    vim.lsp.config("jsonls", jsonls_config.get_config(capabilities))
 
     -- Lua server with custom settings
-    lspconfig.lua_ls.setup({
+    vim.lsp.config("lua_ls", {
       capabilities = capabilities,
       settings = {
         Lua = {
@@ -127,7 +126,7 @@ return {
     })
 
     -- Go server with custom settings
-    lspconfig.gopls.setup({
+    vim.lsp.config("gopls", {
       capabilities = capabilities,
       cmd = { "gopls" },
       filetypes = { "go", "gomod", "gowork", "gotmpl" },
@@ -141,5 +140,8 @@ return {
         },
       },
     })
+
+    -- Enable LSP servers
+    vim.lsp.enable({ "html", "cssls", "tailwindcss", "prismals", "pyright", "vtsls", "jsonls", "lua_ls", "gopls" })
   end,
 }
